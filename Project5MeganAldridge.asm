@@ -7,7 +7,7 @@ TITLE Program 5    (program5MeganAldridge.asm)
 ; Assignment Number : 5
 ; Due Date : 2 / 28 / 2016
 ; Description: This program will allow the user to choose between 
-;		10 and 200 random integers. The random integers will be generated
+;		10 and 200 random integers. The random integers will be generated,
 ;		input into an array, displayed, sorted, and displayed again. 
 INCLUDE Irvine32.inc
 
@@ -60,7 +60,10 @@ main PROC
 		push	OFFSET unsortedString
 		call	displayList				; before sorting
 
+		push	userRequest
+		push	OFFSET arrayRand
 		call	sortList
+
 		call	displayMedian
 
 		push	userRequest
@@ -178,7 +181,37 @@ fillArray ENDP
 
 
 sortList PROC
-ret
+		push	ebp
+		mov		ebp, esp
+		pushad
+
+		mov		ecx, [ebp+12]
+		dec		ecx
+
+	outerSortLoop:
+		push	ecx
+		mov		edi, [ebp+8]
+
+	innerSortLoop:
+		mov		eax, [edi]
+		cmp		[edi+4], eax
+		jg		endInnerSortLoop
+		xchg	eax, [edi+4]
+		mov		[edi], eax
+
+	endInnerSortLoop:
+		add		edi, 4
+		loop	innerSortLoop
+
+		pop		ecx
+		loop	outerSortLoop
+
+	endOuterSortLoop:
+		popad
+		mov		esp, ebp
+		pop		ebp
+		ret		8
+
 sortList ENDP
 
 
